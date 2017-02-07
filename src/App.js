@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import './App.css';
 import CardList from './CardList'
+import SearchBox from './SearchBox'
 
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      robots: []
+      robots: [],
+      searchTerm: ''
     }
 
     setTimeout(() => {
@@ -21,8 +23,25 @@ class App extends Component {
     }, 2000)
   }
 
+  // this.onSearchChange = this.onSearchChange.bind(this)
+  // ^^^ auto bound with cool arrow function below:
+  onSearchChange = (evt) => {
+    this.setState({ searchTerm: evt.target.value })
+  }
+
   render() {
-    return <CardList robots={this.state.robots} />
+    const { searchTerm, robots } = this.state
+    const filteredRobots = robots.filter(robot => {
+      return robot.name.toLowerCase().includes(searchTerm)
+    })
+
+    return (
+      <div className='tc'>
+        <h1>RoboDex</h1>
+        <SearchBox onSearchChange={this.onSearchChange}/>
+        <CardList robots={filteredRobots} />
+      </div>
+    )
   }
 }
 
