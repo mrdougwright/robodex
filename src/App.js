@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import CardList from './CardList'
+
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      robots: []
+    }
+
+    setTimeout(() => {
+      this.setState({
+        robots: [
+          {id: 1, name: 'John Doe', email: 'john.doe@gmail.com' },
+          {id: 2, name: 'Jane Doe', email: 'jane.doe@gmail.com' },
+          {id: 3, name: 'Doug Wright', email: 'doug@gmail.com' },
+        ]
+      })
+    }, 2000)
+  }
+
   render() {
-    return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+    return <CardList robots={this.state.robots} />
   }
 }
 
