@@ -9,18 +9,20 @@ class App extends Component {
     super(props)
     this.state = {
       robots: [],
-      searchTerm: ''
+      searchTerm: '',
+      isPending: true
     }
+  }
 
-    setTimeout(() => {
-      this.setState({
-        robots: [
-          {id: 1, name: 'John Doe', email: 'john.doe@gmail.com' },
-          {id: 2, name: 'Jane Doe', email: 'jane.doe@gmail.com' },
-          {id: 3, name: 'Doug Wright', email: 'doug@gmail.com' },
-        ]
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+          robots: data,
+          isPending: false
+        })
       })
-    }, 2000)
   }
 
   // this.onSearchChange = this.onSearchChange.bind(this)
@@ -30,7 +32,7 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, robots } = this.state
+    const { searchTerm, robots, isPending } = this.state
     const filteredRobots = robots.filter(robot => {
       return robot.name.toLowerCase().includes(searchTerm)
     })
@@ -39,7 +41,7 @@ class App extends Component {
       <div className='tc'>
         <h1>RoboDex</h1>
         <SearchBox onSearchChange={this.onSearchChange}/>
-        <CardList robots={filteredRobots} />
+        {isPending? <h2>Loading...</h2> : <CardList robots={filteredRobots} />}
       </div>
     )
   }
