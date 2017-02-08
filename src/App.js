@@ -11,7 +11,8 @@ class App extends Component {
     this.state = {
       robots: [],
       searchTerm: '',
-      isPending: true
+      isPending: true,
+      robotype: 'set1'
     }
   }
 
@@ -43,7 +44,7 @@ class App extends Component {
         <h1>RoboDex</h1>
         <SearchBox onSearchChange={this.onSearchChange}/>
         <Scroll>
-          {isPending? <h2>Loading...</h2> : <CardList robots={filteredRobots} />}
+          {isPending? <h2>Loading...</h2> : <CardList robots={filteredRobots} robotype={this.state.robotype} />}
         </Scroll>
       </div>
     )

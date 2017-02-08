@@ -2,7 +2,7 @@ import React from 'react'
 import Card from './Card'
 
 
-const CardList = ({robots}) => (
+const CardList = ({robots, robotype}) => (
   <div>
     {
       robots.map(robot => (
@@ -11,6 +11,7 @@ const CardList = ({robots}) => (
           key={robot.id}
           name={robot.name}
           email={robot.email}
+          robotype={robotype}
         />
       ))
     }
