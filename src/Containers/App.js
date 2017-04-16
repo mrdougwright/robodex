@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { setSearchTerm } from '../actions'
+import { setSearchTerm, requestRobots } from '../actions'
 import './App.css';
 import CardList from '../Components/CardList'
 import SearchBox from '../Components/SearchBox'
@@ -9,13 +9,17 @@ import Scroll from '../Components/Scroll'
 
 const mapStateToProps = state => {
   return {
-    searchTerm: state.searchTerm
+    searchTerm: state.search.searchTerm,
+    robots: state.robots.robots,
+    isPending: state.robots.isPending,
+    error: state.robots.error
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSearchChange: event => dispatch(setSearchTerm(event.target.value))
+    onSearchChange: event => dispatch(setSearchTerm(event.target.value)),
+    onRequestRobots: () => dispatch(requestRobots),
   }
 }
 
@@ -23,28 +27,16 @@ const mapDispatchToProps = dispatch => {
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      robots: [],
-      isPending: true,
-      robotype: 'set1'
-    }
+    this.state = { robotype: 'set1' }
   }
 
   componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-          robots: data,
-          isPending: false
-        })
-      })
+    this.props.onRequestRobots()
   }
 
 
   render() {
-    const { robots, isPending } = this.state
-    const { onSearchChange, searchTerm } = this.props
+    const { onSearchChange, searchTerm, robots, isPending, error } = this.props
     const filteredRobots = robots.filter(robot => {
       return robot.name.toLowerCase().includes(searchTerm.toLowerCase())
     })
@@ -53,12 +45,20 @@ class App extends Component {
       <div className='tc'>
         <h1>RoboDex</h1>
         <SearchBox onSearchChange={onSearchChange}/>
+        { error ? <h2>Error: {error}</h2> : null }
         <Scroll>
           {isPending? <h2>Loading...</h2> : <CardList robots={filteredRobots} robotype={this.state.robotype} />}
         </Scroll>
       </div>
     )
   }
+}
+
+App.propTypes = {
+  searchTerm: React.PropTypes.string.isRequired,
+  robots: React.PropTypes.array.isRequired,
+  isPending: React.PropTypes.bool.isRequired,
+  onRequestRobots: React.PropTypes.func.isRequired,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
