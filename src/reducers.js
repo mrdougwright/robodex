@@ -1,10 +1,10 @@
 import { SET_SEARCH_TERM } from './constants'
 
 const initialState = {
-  searchTerm: '',
+  searchTerm: ''
 }
 
-const searchReducer = (state = initialState, action = {}) => {
+export const searchReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case SET_SEARCH_TERM:
       return Object.assign({}, state, { searchTerm: action.payload })
@@ -12,5 +12,3 @@ const searchReducer = (state = initialState, action = {}) => {
       return state
   }
 }
-
-export searchReducer

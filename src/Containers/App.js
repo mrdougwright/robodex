@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+import { setSearchTerm } from '../actions'
 import './App.css';
 import CardList from '../Components/CardList'
 import SearchBox from '../Components/SearchBox'
 import Scroll from '../Components/Scroll'
+
+
+const mapStateToProps = state => {
+  return {
+    searchTerm: state.searchTerm
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onSearchChange: event => dispatch(setSearchTerm(event.target.value))
+  }
+}
 
 
 class App extends Component {
@@ -10,7 +25,6 @@ class App extends Component {
     super(props)
     this.state = {
       robots: [],
-      searchTerm: '',
       isPending: true,
       robotype: 'set1'
     }
@@ -27,22 +41,18 @@ class App extends Component {
       })
   }
 
-  // this.onSearchChange = this.onSearchChange.bind(this)
-  // ^^^ auto bound with cool arrow function below:
-  onSearchChange = (evt) => {
-    this.setState({ searchTerm: evt.target.value })
-  }
 
   render() {
-    const { searchTerm, robots, isPending } = this.state
+    const { robots, isPending } = this.state
+    const { onSearchChange, searchTerm } = this.props
     const filteredRobots = robots.filter(robot => {
-      return robot.name.toLowerCase().includes(searchTerm)
+      return robot.name.toLowerCase().includes(searchTerm.toLowerCase())
     })
 
     return (
       <div className='tc'>
         <h1>RoboDex</h1>
-        <SearchBox onSearchChange={this.onSearchChange}/>
+        <SearchBox onSearchChange={onSearchChange}/>
         <Scroll>
           {isPending? <h2>Loading...</h2> : <CardList robots={filteredRobots} robotype={this.state.robotype} />}
         </Scroll>
@@ -51,4 +61,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
